@@ -1,0 +1,47 @@
+# ============================================================
+# XAI-IDS Pro — Requirements  (Python 3.12 compatible)
+# ============================================================
+
+# Core scientific stack
+numpy>=1.26
+pandas>=2.0
+scikit-learn>=1.3
+pyarrow>=13.0
+
+# Deep Learning (already installed separately as tensorflow-cpu)
+# Install manually before this file:  pip install tensorflow-cpu
+# tensorflow-cpu is listed here only as a reference — skip if already installed
+# tensorflow-cpu>=2.16
+
+# Explainability
+shap>=0.43
+lime>=0.2.0.1
+
+# Configuration
+pydantic>=1.10,<2.0
+PyYAML>=6.0
+
+# API server
+fastapi>=0.104
+uvicorn[standard]>=0.24
+python-multipart>=0.0.6
+python-jose[cryptography]>=3.3
+passlib[bcrypt]>=1.7.4
+
+# Dashboard
+streamlit>=1.28
+
+# Visualisation
+matplotlib>=3.7
+plotly>=5.17
+seaborn>=0.12
+
+# Logging (already pulled in by tensorflow-cpu/keras)
+rich>=13.0
+
+# Testing
+pytest>=7.4
+pytest-cov>=4.1
+
+# Reporting
+jinja2>=3.1

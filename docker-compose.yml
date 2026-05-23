@@ -1,0 +1,32 @@
+version: "3.9"
+
+services:
+  api:
+    build: .
+    container_name: xai_ids_api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
+      - ./models:/app/models
+      - ./reports:/app/reports
+      - ./logs:/app/logs
+    environment:
+      - XAI_API__SECRET_KEY=${SECRET_KEY:-CHANGE_ME}
+      - XAI_APP__LOG_LEVEL=INFO
+    restart: unless-stopped
+    command: python main.py serve --host 0.0.0.0 --port 8000
+
+  dashboard:
+    build: .
+    container_name: xai_ids_dashboard
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./data:/app/data
+      - ./models:/app/models
+      - ./reports:/app/reports
+    depends_on:
+      - api
+    restart: unless-stopped
+    command: python main.py dashboard

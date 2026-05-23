@@ -1,0 +1,81 @@
+app:
+  name: "XAI-IDS Pro"
+  version: "1.0.0"
+  description: "Explainable AI Intrusion Detection System"
+  log_level: "INFO"
+  log_file: "logs/xai_ids.log"
+
+data:
+  path: "data/"
+  file_format: "parquet"       # parquet | csv
+  label_column: "Label"
+  benign_label: "benign"
+  sample_size: 100000            # null = use full dataset
+  test_split: 0.2
+  random_state: 42
+  feature_selection:
+    enabled: true
+    variance_threshold: 0.01   # Drop features with variance below this
+    correlation_threshold: 0.95 # Drop one of highly correlated feature pairs
+
+model:
+  autoencoder:
+    encoder_dims: [128, 64, 32]
+    latent_dim: 16
+    decoder_dims: [32, 64, 128]
+    activation: "relu"
+    dropout_rate: 0.2
+    use_batch_norm: true
+    epochs: 50
+    batch_size: 256
+    learning_rate: 0.001
+    early_stopping_patience: 10
+    reduce_lr_patience: 5
+    validation_split: 0.1
+  threshold:
+    strategy: "percentile"      # percentile | iqr | zscore | mad
+    percentile: 95
+    iqr_multiplier: 1.5
+    zscore_threshold: 3.0
+  ensemble:
+    use_isolation_forest: true
+    isolation_contamination: 0.05
+    ensemble_weight_ae: 0.7     # Weight for Autoencoder score
+    ensemble_weight_if: 0.3     # Weight for Isolation Forest score
+  persistence:
+    model_dir: "models/"
+    save_format: "keras"        # keras | savedmodel
+
+explainability:
+  shap:
+    enabled: true
+    num_background_samples: 200
+    num_explain_samples: 100
+    plot_top_features: 20
+  lime:
+    enabled: true
+    num_features: 15
+    num_samples: 1000
+    kernel_width: 0.75
+
+evaluation:
+  metrics: ["precision", "recall", "f1", "roc_auc", "confusion_matrix"]
+  plot_roc: true
+  plot_precision_recall: true
+  plot_confusion_matrix: true
+  report_dir: "reports/"
+
+api:
+  host: "0.0.0.0"
+  port: 8000
+  secret_key: "CHANGE_ME_IN_PRODUCTION"
+  jwt_algorithm: "HS256"
+  access_token_expire_minutes: 60
+  rate_limit: 100               # requests per minute
+  cors_origins: ["*"]
+
+dashboard:
+  host: "0.0.0.0"
+  port: 8501
+  title: "XAI-IDS Pro Dashboard"
+  theme: "dark"
